@@ -1,0 +1,24 @@
+# tests/smoke.yaml
+stb_id: "A"            # logical ID you registered with register_stb()
+name: "basic_smoke"
+
+steps:
+  - cmd: "POWER"        # wake the STB just in case
+    wait: 2.0
+
+  - cmd: "MENU"         # open main menu
+    expect_cmd: "MENU"
+    wait: 1.0
+    note: "open main menu"
+
+  - cmd: "RIGHT"        # move once to the right
+    expect_cmd: "RIGHT"
+    wait: 0.5
+
+  - cmd: "OK"           # select highlighted tile (usually 'Guide')
+    expect_cmd: "OK"
+    wait: 2.0
+
+  - cmd: "BACK"         # exit back to Live TV
+    expect_cmd: "BACK"
+    wait: 1.0

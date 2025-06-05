@@ -1,0 +1,20 @@
+# Core image capture & processing
+opencv-python
+pytesseract
+scikit-image
+
+# HTTP & DB
+requests
+mysql-connector-python
+neo4j
+
+# Data science & utils
+numpy
+pandas
+tqdm
+pyyaml
+
+# Deep learning
+torch>=2.2
+torchvision
+av

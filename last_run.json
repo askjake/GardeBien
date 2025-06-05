@@ -1,0 +1,442 @@
+{
+  "name": "t_dvr_001_custom_timer",
+  "stb_id": "A",
+  "start_ts": 1748200168.8112104,
+  "end_ts": 1748200529.3711982,
+  "overall": "FAIL",
+  "steps": [
+    {
+      "cmd": "LIVE",
+      "expect_cmd": "LIVE",
+      "predicted_cmd": "BACK",
+      "outcome": "FAIL",
+      "timestamp": "2025-05-25T19:09:36.653275+00:00",
+      "note": "",
+      "iteration": 1
+    },
+    {
+      "cmd": "DVR",
+      "expect_cmd": "DVR",
+      "predicted_cmd": "DVR",
+      "outcome": "PASS",
+      "timestamp": "2025-05-25T19:09:42.342131+00:00",
+      "note": "open DVR menu",
+      "iteration": 1
+    },
+    {
+      "cmd": "UP",
+      "expect_cmd": "UP",
+      "predicted_cmd": "UP",
+      "outcome": "PASS",
+      "timestamp": "2025-05-25T19:09:47.310125+00:00",
+      "note": "",
+      "iteration": 1
+    },
+    {
+      "cmd": "RIGHT",
+      "expect_cmd": "RIGHT",
+      "predicted_cmd": "1",
+      "outcome": "FAIL",
+      "timestamp": "2025-05-25T19:09:52.291090+00:00",
+      "note": "",
+      "iteration": 1
+    },
+    {
+      "cmd": "RIGHT",
+      "expect_cmd": "RIGHT",
+      "predicted_cmd": "RIGHT",
+      "outcome": "PASS",
+      "timestamp": "2025-05-25T19:09:57.327615+00:00",
+      "note": "",
+      "iteration": 1
+    },
+    {
+      "cmd": "OPTIONS",
+      "expect_cmd": "OPTIONS",
+      "predicted_cmd": "OPTIONS",
+      "outcome": "PASS",
+      "timestamp": "2025-05-25T19:10:02.164867+00:00",
+      "note": "",
+      "iteration": 1
+    },
+    {
+      "cmd": "3",
+      "expect_cmd": "3",
+      "predicted_cmd": "1",
+      "outcome": "FAIL",
+      "timestamp": "2025-05-25T19:10:07.580331+00:00",
+      "note": "",
+      "iteration": 1
+    },
+    {
+      "cmd": "ENTER",
+      "expect_cmd": "OK",
+      "predicted_cmd": "1",
+      "outcome": "FAIL",
+      "timestamp": "2025-05-25T19:10:12.698838+00:00",
+      "note": "",
+      "iteration": 1
+    },
+    {
+      "cmd": "2",
+      "expect_cmd": "NUM_2",
+      "predicted_cmd": "1",
+      "outcome": "FAIL",
+      "timestamp": "2025-05-25T19:10:17.767100+00:00",
+      "note": "",
+      "iteration": 1
+    },
+    {
+      "cmd": "ENTER",
+      "expect_cmd": "OK",
+      "predicted_cmd": "1",
+      "outcome": "FAIL",
+      "timestamp": "2025-05-25T19:10:22.727253+00:00",
+      "note": "",
+      "iteration": 1
+    },
+    {
+      "cmd": "DOWN",
+      "expect_cmd": "DOWN",
+      "predicted_cmd": "1",
+      "outcome": "FAIL",
+      "timestamp": "2025-05-25T19:10:27.753640+00:00",
+      "note": "",
+      "iteration": 1
+    },
+    {
+      "cmd": "DOWN",
+      "expect_cmd": "DOWN",
+      "predicted_cmd": "DOWN",
+      "outcome": "PASS",
+      "timestamp": "2025-05-25T19:10:32.681568+00:00",
+      "note": "",
+      "iteration": 1
+    },
+    {
+      "cmd": "DOWN",
+      "expect_cmd": "DOWN",
+      "predicted_cmd": "UP",
+      "outcome": "FAIL",
+      "timestamp": "2025-05-25T19:10:37.508026+00:00",
+      "note": "",
+      "iteration": 1
+    },
+    {
+      "cmd": "ENTER",
+      "expect_cmd": "ENTER",
+      "predicted_cmd": "1",
+      "outcome": "FAIL",
+      "timestamp": "2025-05-25T19:10:42.715579+00:00",
+      "note": "open set-time dialog",
+      "iteration": 1
+    },
+    {
+      "cmd": "DOWN",
+      "expect_cmd": "DOWN",
+      "predicted_cmd": "1",
+      "outcome": "FAIL",
+      "timestamp": "2025-05-25T19:10:47.673263+00:00",
+      "note": "",
+      "iteration": 1
+    },
+    {
+      "cmd": "RIGHT",
+      "expect_cmd": "RIGHT",
+      "predicted_cmd": "1",
+      "outcome": "FAIL",
+      "timestamp": "2025-05-25T19:10:52.586325+00:00",
+      "note": "",
+      "iteration": 1
+    },
+    {
+      "cmd": "DOWN",
+      "expect_cmd": "DOWN",
+      "predicted_cmd": "1",
+      "outcome": "FAIL",
+      "timestamp": "2025-05-25T19:10:56.911719+00:00",
+      "note": "",
+      "iteration": 1
+    },
+    {
+      "cmd": "DOWN",
+      "expect_cmd": "DOWN",
+      "predicted_cmd": "1",
+      "outcome": "FAIL",
+      "timestamp": "2025-05-25T19:11:01.640313+00:00",
+      "note": "",
+      "iteration": 2
+    },
+    {
+      "cmd": "DOWN",
+      "expect_cmd": "DOWN",
+      "predicted_cmd": "1",
+      "outcome": "FAIL",
+      "timestamp": "2025-05-25T19:11:06.213806+00:00",
+      "note": "",
+      "iteration": 3
+    },
+    {
+      "cmd": "DOWN",
+      "expect_cmd": "DOWN",
+      "predicted_cmd": "1",
+      "outcome": "FAIL",
+      "timestamp": "2025-05-25T19:11:10.809887+00:00",
+      "note": "",
+      "iteration": 4
+    },
+    {
+      "cmd": "DOWN",
+      "expect_cmd": "DOWN",
+      "predicted_cmd": "1",
+      "outcome": "FAIL",
+      "timestamp": "2025-05-25T19:11:15.341128+00:00",
+      "note": "",
+      "iteration": 5
+    },
+    {
+      "cmd": "DOWN",
+      "expect_cmd": "DOWN",
+      "predicted_cmd": "1",
+      "outcome": "FAIL",
+      "timestamp": "2025-05-25T19:11:19.645389+00:00",
+      "note": "",
+      "iteration": 6
+    },
+    {
+      "cmd": "DOWN",
+      "expect_cmd": "DOWN",
+      "predicted_cmd": "1",
+      "outcome": "FAIL",
+      "timestamp": "2025-05-25T19:11:24.104760+00:00",
+      "note": "",
+      "iteration": 7
+    },
+    {
+      "cmd": "DOWN",
+      "expect_cmd": "DOWN",
+      "predicted_cmd": "1",
+      "outcome": "FAIL",
+      "timestamp": "2025-05-25T19:11:28.736466+00:00",
+      "note": "",
+      "iteration": 8
+    },
+    {
+      "cmd": "DOWN",
+      "expect_cmd": "DOWN",
+      "predicted_cmd": "1",
+      "outcome": "FAIL",
+      "timestamp": "2025-05-25T19:11:33.119839+00:00",
+      "note": "",
+      "iteration": 9
+    },
+    {
+      "cmd": "DOWN",
+      "expect_cmd": "DOWN",
+      "predicted_cmd": "1",
+      "outcome": "FAIL",
+      "timestamp": "2025-05-25T19:11:37.705527+00:00",
+      "note": "",
+      "iteration": 10
+    },
+    {
+      "cmd": "UP",
+      "expect_cmd": "UP",
+      "predicted_cmd": "1",
+      "outcome": "FAIL",
+      "timestamp": "2025-05-25T19:11:42.686726+00:00",
+      "note": "",
+      "iteration": 1
+    },
+    {
+      "cmd": "UP",
+      "expect_cmd": "UP",
+      "predicted_cmd": "1",
+      "outcome": "FAIL",
+      "timestamp": "2025-05-25T19:11:47.656782+00:00",
+      "note": "",
+      "iteration": 1
+    },
+    {
+      "cmd": "RIGHT",
+      "expect_cmd": "RIGHT",
+      "predicted_cmd": "1",
+      "outcome": "FAIL",
+      "timestamp": "2025-05-25T19:11:52.354998+00:00",
+      "note": "",
+      "iteration": 1
+    },
+    {
+      "cmd": "RIGHT",
+      "expect_cmd": "RIGHT",
+      "predicted_cmd": "1",
+      "outcome": "FAIL",
+      "timestamp": "2025-05-25T19:11:57.166594+00:00",
+      "note": "",
+      "iteration": 1
+    },
+    {
+      "cmd": "DOWN",
+      "expect_cmd": "DOWN",
+      "predicted_cmd": "1",
+      "outcome": "FAIL",
+      "timestamp": "2025-05-25T19:12:02.196525+00:00",
+      "note": "",
+      "iteration": 1
+    },
+    {
+      "cmd": "RIGHT",
+      "expect_cmd": "RIGHT",
+      "predicted_cmd": "1",
+      "outcome": "FAIL",
+      "timestamp": "2025-05-25T19:12:07.025963+00:00",
+      "note": "",
+      "iteration": 1
+    },
+    {
+      "cmd": "UP",
+      "expect_cmd": "UP",
+      "predicted_cmd": "1",
+      "outcome": "FAIL",
+      "timestamp": "2025-05-25T19:12:11.944084+00:00",
+      "note": "",
+      "iteration": 1
+    },
+    {
+      "cmd": "UP",
+      "expect_cmd": "UP",
+      "predicted_cmd": "1",
+      "outcome": "FAIL",
+      "timestamp": "2025-05-25T19:12:16.920324+00:00",
+      "note": "",
+      "iteration": 1
+    },
+    {
+      "cmd": "RIGHT",
+      "expect_cmd": "RIGHT",
+      "predicted_cmd": "1",
+      "outcome": "FAIL",
+      "timestamp": "2025-05-25T19:12:21.694364+00:00",
+      "note": "",
+      "iteration": 1
+    },
+    {
+      "cmd": "RIGHT",
+      "expect_cmd": "RIGHT",
+      "predicted_cmd": "1",
+      "outcome": "FAIL",
+      "timestamp": "2025-05-25T19:12:26.622230+00:00",
+      "note": "",
+      "iteration": 1
+    },
+    {
+      "cmd": "ENTER",
+      "expect_cmd": "ENTER",
+      "predicted_cmd": "1",
+      "outcome": "FAIL",
+      "timestamp": "2025-05-25T19:12:31.653467+00:00",
+      "note": "",
+      "iteration": 1
+    },
+    {
+      "cmd": "RIGHT",
+      "expect_cmd": "RIGHT",
+      "predicted_cmd": "1",
+      "outcome": "FAIL",
+      "timestamp": "2025-05-25T19:12:36.581228+00:00",
+      "note": "",
+      "iteration": 1
+    },
+    {
+      "cmd": "RIGHT",
+      "expect_cmd": "RIGHT",
+      "predicted_cmd": "1",
+      "outcome": "FAIL",
+      "timestamp": "2025-05-25T19:12:41.456652+00:00",
+      "note": "",
+      "iteration": 1
+    },
+    {
+      "cmd": "ENTER",
+      "expect_cmd": "ENTER",
+      "predicted_cmd": "1",
+      "outcome": "FAIL",
+      "timestamp": "2025-05-25T19:12:46.235436+00:00",
+      "note": "",
+      "iteration": 1
+    },
+    {
+      "cmd": "LIVE",
+      "expect_cmd": "LIVE",
+      "predicted_cmd": "BACK",
+      "outcome": "FAIL",
+      "timestamp": "2025-05-25T19:14:51.707180+00:00",
+      "note": "",
+      "iteration": 1
+    },
+    {
+      "cmd": "DVR",
+      "expect_cmd": "DVR",
+      "predicted_cmd": "DVR",
+      "outcome": "PASS",
+      "timestamp": "2025-05-25T19:14:57.318787+00:00",
+      "note": "",
+      "iteration": 1
+    },
+    {
+      "cmd": "OK",
+      "expect_cmd": "OK",
+      "predicted_cmd": "1",
+      "outcome": "FAIL",
+      "timestamp": "2025-05-25T19:15:03.456915+00:00",
+      "note": "",
+      "iteration": 1
+    },
+    {
+      "cmd": "OK",
+      "expect_cmd": "OK",
+      "predicted_cmd": "1",
+      "outcome": "FAIL",
+      "timestamp": "2025-05-25T19:15:09.772697+00:00",
+      "note": "",
+      "iteration": 1
+    },
+    {
+      "cmd": "OK",
+      "expect_cmd": "OK",
+      "predicted_cmd": "1",
+      "outcome": "FAIL",
+      "timestamp": "2025-05-25T19:15:14.693909+00:00",
+      "note": "",
+      "iteration": 1
+    },
+    {
+      "cmd": "LEFT",
+      "expect_cmd": "LEFT",
+      "predicted_cmd": "1",
+      "outcome": "FAIL",
+      "timestamp": "2025-05-25T19:15:19.659562+00:00",
+      "note": "",
+      "iteration": 1
+    },
+    {
+      "cmd": "OK",
+      "expect_cmd": "OK",
+      "predicted_cmd": "1",
+      "outcome": "FAIL",
+      "timestamp": "2025-05-25T19:15:24.574424+00:00",
+      "note": "",
+      "iteration": 1
+    },
+    {
+      "cmd": "OK",
+      "expect_cmd": "OK",
+      "predicted_cmd": "1",
+      "outcome": "FAIL",
+      "timestamp": "2025-05-25T19:15:29.371168+00:00",
+      "note": "",
+      "iteration": 1
+    }
+  ],
+  "spec": "tests\\t_dvr_001.yaml"
+}
