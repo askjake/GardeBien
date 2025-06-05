@@ -51,6 +51,35 @@ log = logging.getLogger(__name__)
 log.setLevel(logging.INFO)
 log.addHandler(logging.StreamHandler())
 
+from dp_dispatcher import send
+from capture_and_detector import capture_frame, detect_screen
+from idm_model import load_model
+from reporting import ResultLogger
+from stb_registry import resolve
+
+MODEL = load_model("models/dvr_flow_v1.h5")
+
+def run_sequence(test_yaml, stb_alias):
+    steps = load_test(test_yaml)
+    stb_ip  = resolve(stb_alias)
+    logger  = ResultLogger(test_yaml, stb_alias)
+
+    for idx, s in enumerate(steps, 1):
+        send(s["step"], stb_ip)
+
+        frame = capture_frame(stb_ip)
+        label, conf = detect_screen(frame, MODEL)
+
+        passed = (label == s["expect"])
+        logger.log(idx, s["step"], label, conf, passed)
+
+        if not passed:
+            logger.finalise(status="FAIL")
+            return False
+
+    logger.finalise(status="PASS")
+    return True
+
 
 # ---------------------------------------------------------------------------
 # Result data structures
@@ -74,7 +103,9 @@ def _latest_pair_paths() -> tuple[str, str]:
     latest = max(subdirs, key=lambda p: p.stat().st_mtime)
     return str(latest / "bf.jpg"), str(latest / "af.jpg")
 
-
+def load_test(path):
+    with open(path) as f:
+        return yaml.safe_load(f)
 # ---------------------------------------------------------------------------
 # Public runner API
 # ---------------------------------------------------------------------------
