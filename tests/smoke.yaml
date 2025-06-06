@@ -1,9 +1,11 @@
 # tests/smoke.yaml
-stb_id: "A"            # logical ID you registered with register_stb()
+stb_id: "1"
+capture_device: "video=Video (00-1 Pro Capture Quad HDMI)"
+portview: "1"
 name: "basic_smoke"
 
 steps:
-  - cmd: "POWER"        # wake the STB just in case
+  - cmd: "ENTER"        # wake the STB just in case
     wait: 2.0
 
   - cmd: "MENU"         # open main menu
@@ -15,10 +17,10 @@ steps:
     expect_cmd: "RIGHT"
     wait: 0.5
 
-  - cmd: "OK"           # select highlighted tile (usually 'Guide')
-    expect_cmd: "OK"
+  - cmd: "ENTER"           # select highlighted tile (usually 'Guide')
+    expect_cmd: "ENTER"
     wait: 2.0
 
-  - cmd: "BACK"         # exit back to Live TV
-    expect_cmd: "BACK"
+  - cmd: "CH-"         # exit back to Live TV
+    expect_cmd: "CH-"
     wait: 1.0

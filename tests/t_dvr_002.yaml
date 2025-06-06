@@ -1,0 +1,92 @@
+# tests/t_dvr_002.yaml
+stb_id: "2"
+capture_device: "video=Video (00-1 Pro Capture Quad HDMI)"
+portview: "2"
+name: "t_dvr_002_custom_timer"
+
+steps:
+  # 0. Wake / reset context
+  - cmd: "LIVE"          # ensure box is on
+    wait: 2.0
+
+  # 1. DVR root
+  - cmd: "DVR"
+    expect_cmd: "DVR"
+    wait: 1.4
+    note: "open DVR menu"
+
+  # --- navigate Schedule ▸ Timers tab -------------------------------
+  - cmd: "UP"
+    expect_cmd: "UP"
+  - cmd: "RIGHT"
+    expect_cmd: "RIGHT"
+  - cmd: "RIGHT"
+    expect_cmd: "RIGHT"
+
+  # 2. Options ▸ Create Custom Timer
+  - cmd: "OPTIONS"
+    expect_cmd: "OPTIONS"
+  - cmd: "3"          # “3” = Create Custom Timer
+    expect_cmd: "3"
+    wait: 1.0
+
+  # 2b. Choose channel “2”
+  - cmd: "ENTER"             # Select channel list
+    expect_cmd: "SELECT"
+  - cmd: "2"
+    expect_cmd: "NUM_2"
+    wait: 0.5
+  - cmd: "ENTER"
+    expect_cmd: "SELECT"
+
+  # 3. Down to Time field
+  - cmd: "DOWN"           # Frequency ▸ Date ▸ Time
+  - cmd: "DOWN"
+  - cmd: "DOWN"
+
+  # 4. Open set-time dialog and tweak (collapse long macro)
+  - cmd: "ENTER"
+    note: "open set-time dialog"
+    wait: 0.8
+  # --- you could expand long macro here; kept short for smSELECTe ---
+  - cmd: "DOWN"
+  - cmd: "RIGHT"
+  - cmd: "DOWN" # 60 times, set to current minute
+    expect_cmd: "DOWN"
+    repeat: 10
+  - cmd: "UP"
+  - cmd: "UP"   # set to start 2 minutes from now
+  - cmd: "RIGHT" # AM/PM
+  - cmd: "RIGHT" # stop hour
+  - cmd: "DOWN" # set stop time to current hour
+  - cmd: "RIGHT"
+  - cmd: "UP"
+  - cmd: "UP"   # set recording for 2 minutes long
+  - cmd: "RIGHT"
+  - cmd: "RIGHT"
+
+  - cmd: "ENTER"     
+  - cmd: "RIGHT"
+  - cmd: "RIGHT"
+
+  - cmd: "ENTER"             
+
+
+  # 6. Back to Live TV and wait for recording to start
+  - cmd: "LIVE"
+    expect_cmd: "LIVE"
+    wait: 120.0           # two-minute wait
+
+  # 7. Verify recording in progress
+  - cmd: "DVR"
+    wait: 1.0
+  - cmd: "SELECT"             # open Program Info
+    wait: 2.0
+  - cmd: "SELECT"             # start playback
+    wait: 2.0
+
+  # 8. Stop playback and confirm dialog
+  - cmd: "SELECT"             # SELECT
+  - cmd: "LEFT"
+  - cmd: "SELECT"             # confirm stop (#312)
+  - cmd: "SELECT"             # return to Live

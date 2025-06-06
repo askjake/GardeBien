@@ -1,18 +1,8 @@
-# guide_navigation1.yaml
-
+# tests/t_dvr_001.yaml
 stb_id: "1"
-capture_device: 'video=Video (00-0 Pro Capture Quad HDMI)'
-portview: "1"         # or whatever DP-Studio port your lab uses
-name: "guide_navigation1"
-
-steps:
-  - cmd: "LIVE"
-    expect_cmd: "LIVE"
-    wait: 1.0
-
-  - cmd: "RIGHT"
-    expect_cmd: "RIGHT"
-    # …etc…
+capture_device: "video=Video (00-0 Pro Capture Quad HDMI)"
+portview: "1"
+name: "t_dvr_001_custom_timer"
 
 steps:
   # 0. Wake / reset context
@@ -120,45 +110,27 @@ steps:
   - cmd: "DOWN"
     expect_cmd: "DOWN"
 
-  - cmd: "1"
-    expect_cmd: "1"
-  - cmd: "2"
-    expect_cmd: "2"
   - cmd: "3"
     expect_cmd: "3"
+  - cmd: "LIVE"
   - cmd: "4"
     expect_cmd: "4"
+  - cmd: "LIVE"
   - cmd: "5"
     expect_cmd: "5"
+  - cmd: "LIVE"
   - cmd: "6"
     expect_cmd: "6"
+  - cmd: "LIVE"
   - cmd: "7"
     expect_cmd: "7"
+  - cmd: "LIVE"
   - cmd: "8"
     expect_cmd: "8"
+  - cmd: "LIVE"
   - cmd: "9"
     expect_cmd: "9"
+  - cmd: "LIVE"
   - cmd: "0"
     expect_cmd: "0"
-
-
-  - cmd: "1"
-    expect_cmd: "1"
-  - cmd: "2"
-    expect_cmd: "2"
-  - cmd: "3"
-    expect_cmd: "3"
-  - cmd: "4"
-    expect_cmd: "4"
-  - cmd: "5"
-    expect_cmd: "5"
-  - cmd: "6"
-    expect_cmd: "6"
-  - cmd: "7"
-    expect_cmd: "7"
-  - cmd: "8"
-    expect_cmd: "8"
-  - cmd: "9"
-    expect_cmd: "9"
-  - cmd: "0"
-    expect_cmd: "0"
+  - cmd: "LIVE" 

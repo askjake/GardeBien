@@ -18,6 +18,7 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, Optional, Tuple
+from idm_model import predict_single_frame
 
 import cv2
 import numpy as np
@@ -176,6 +177,30 @@ class CaptureManager:
         if sess is None:
             raise ValueError(f"Unknown capture session '{sess_id}'")
         return sess.stop()
+
+# ───────── Convenience for test_runner ─────────────────────────────
+import tempfile
+
+def capture_frame(device: str = 'video="HDMI"') -> np.ndarray:
+    """
+    Grab a single BGR frame from the capture device and return as ndarray.
+    Uses the same _screenshot helper that writes a JPEG to disk, then loads it
+    back into memory. Keeps test_runner decoupled from ffmpeg details.
+    """
+    with tempfile.NamedTemporaryFile(suffix=".jpg", delete=False) as tmp:
+        pass  # just get a path, _screenshot will overwrite it
+    _screenshot(device, Path(tmp.name))
+    frame = cv2.imread(tmp.name)
+    os.unlink(tmp.name)
+    if frame is None:
+        raise RuntimeError(f"Failed to read frame from {device}")
+    return frame
+
+
+
+def detect_screen(frame: np.ndarray):
+    """Return (label, confidence) for the current HDMI grab."""
+    return predict_single_frame(frame)
 
 
 # ────────────────────────────────────────────────────────────────────────────

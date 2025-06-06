@@ -1,188 +1,144 @@
-"""test_runner.py
-====================================
-Declarative **test specification runner** for set‑top automated tests.
-Specs are simple YAML files that list remote‑control *steps* and optional
-expectations. The runner:
-
-1. Parses the spec
-2. Sends each command via `dp_dispatcher.send()` (so BF/AF + dataset
-   capture happen automatically)
-3. Uses `idm_model.predict()` to verify that the observed transition
-   matches the *expected* command (if provided)
-4. Records per‑step outcome and aggregates a final PASS/FAIL
-5. Emits an in‑memory results dict which `reporting.py` can turn into
-   JUnit / Allure artifacts.
+#!/usr/bin/env python3
+"""
+Declarative test-spec runner for GardeBien.
 
 YAML schema
 -----------
-```yaml
-stb_id: "A"            # registered with dp_dispatcher
-name: "dvr_create_timer"
+stb_id: "1"
+name:   "guide_navigation1"
 steps:
-  - cmd: "MENU"        # REQUIRED: command to send
-    wait: 1.0           # OPTIONAL: seconds to sleep after send (default 0.5)
-    expect_cmd: "MENU" # OPTIONAL: IDM‑predicted cmd we expect; omit to skip
-    note: "open menu"  # OPTIONAL: free text
-
+  - cmd: "MENU"
+    wait: 1.0
+    expect_cmd: "MENU"
   - cmd: "RIGHT"
     expect_cmd: "RIGHT"
-
-  - cmd: "OK"
-```
-
-Dependencies: `pyyaml`  (add to requirements.txt)
 """
 
 from __future__ import annotations
-
-import json
-import time
+import json, time, logging, pathlib, yaml
 from datetime import datetime, timezone
-from pathlib import Path
 from typing import Any, Dict, List
 
-import yaml, time, json, pathlib, logging
+from dp_dispatcher        import send
+from capture_and_detector import capture_frame, detect_screen   # single-frame path
+from idm_model            import predict                       # pair BF/AF path
 import reporting
-from dp_dispatcher import send
-from idm_model      import predict          # for “expect_cmd” checks
-from ui_graph       import UIGraph
 
+# ───────────────────────────────────────────────────────────────────────────
 log = logging.getLogger(__name__)
 log.setLevel(logging.INFO)
 log.addHandler(logging.StreamHandler())
 
-from dp_dispatcher import send
-from capture_and_detector import capture_frame, detect_screen
-from idm_model import load_model
-from reporting import ResultLogger
-from stb_registry import resolve
-
-MODEL = load_model("models/dvr_flow_v1.h5")
-
-def run_sequence(test_yaml, stb_alias):
-    steps = load_test(test_yaml)
-    stb_ip  = resolve(stb_alias)
-    logger  = ResultLogger(test_yaml, stb_alias)
-
-    for idx, s in enumerate(steps, 1):
-        send(s["step"], stb_ip)
-
-        frame = capture_frame(stb_ip)
-        label, conf = detect_screen(frame, MODEL)
-
-        passed = (label == s["expect"])
-        logger.log(idx, s["step"], label, conf, passed)
-
-        if not passed:
-            logger.finalise(status="FAIL")
-            return False
-
-    logger.finalise(status="PASS")
-    return True
-
-
 # ---------------------------------------------------------------------------
-# Result data structures
-# ---------------------------------------------------------------------------
-
+# Types
 StepResult = Dict[str, Any]
-RunResult = Dict[str, Any]
+RunResult  = Dict[str, Any]
 
 # ---------------------------------------------------------------------------
-# Runner implementation
-# ---------------------------------------------------------------------------
-
 def _utc_iso() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
-def _latest_pair_paths() -> tuple[str, str]:
-    """Return bf.jpg/af.jpg of the most recently saved dataset folder."""
-    ds_root = Path("datasets")
-    subdirs = [d for d in ds_root.iterdir() if d.is_dir()]
-    latest = max(subdirs, key=lambda p: p.stat().st_mtime)
-    return str(latest / "bf.jpg"), str(latest / "af.jpg")
+def _latest_pair_paths() -> tuple[str, str] | None:
+    """Return (bf.jpg, af.jpg) of **newest** dataset folder, else None."""
+    ds_root = pathlib.Path("datasets")
+    jpgs    = sorted(ds_root.rglob("bf.jpg"), key=lambda p: p.stat().st_mtime)
+    if not jpgs:
+        return None
+    bf = jpgs[-1]
+    af = bf.with_name("af.jpg")
+    return str(bf), str(af) if af.exists() else None
 
-def load_test(path):
-    with open(path) as f:
-        return yaml.safe_load(f)
-# ---------------------------------------------------------------------------
-# Public runner API
-# ---------------------------------------------------------------------------
 
-def run_spec(spec_path: str | pathlib.Path, *, reporter=reporting):
+# ---------------------------------------------------------------------------
+def run_spec(spec_path: str | pathlib.Path) -> RunResult:
     """
-    Execute a YAML test-spec and return the run-record dict.
+    Execute a YAML test-spec and return an in-memory results dict.
     """
     spec_path = pathlib.Path(spec_path)
-    spec = yaml.safe_load(spec_path.read_text(encoding="utf-8"))
+    spec      = yaml.safe_load(spec_path.read_text(encoding="utf-8"))
 
-    stb  = spec["stb_id"]
-    name = spec.get("name", spec_path.stem)
-    steps_out = []
-    start_ts = time.time()
-    
     if "capture_device" in spec and "portview" in spec:
-        from stb_registry  import register_capture, register_portview
-        from dp_dispatcher import register_stb
-        register_capture(stb, spec["capture_device"])
-        register_portview(stb, spec["portview"])
-        register_stb(stb,
-                 capture=spec["capture_device"],
-                 portview=spec["portview"])
+        from stb_registry    import register_capture, register_portview
+        from dp_dispatcher   import register_stb
 
-    for step in spec["steps"]:
-        cmd   = step["cmd"].upper()
-        note  = step.get("note", "")
-        expect = step.get("expect_cmd", cmd).upper()
-        wait   = float(step.get("wait", 0.5))
-        repeat = int(step.get("repeat", 1))
+        cap = spec["capture_device"]
+        pv  = spec["portview"]
+        stb = spec["stb_id"]
+        register_capture( stb, cap )
+        register_portview( stb, pv )
+        register_stb( stb, capture=cap, portview=pv )
+        log.info(f"Registered STB {stb} → {cap} (portview={pv})")
+         
+    stb_id   = spec["stb_id"]
+    run_name = spec.get("name", spec_path.stem)
+    steps_out: List[StepResult] = []
 
-        for i in range(repeat):
-            send(cmd, stb_id=stb)     # send the key and capture BF/AF
-            time.sleep(wait)          # respect the step’s wait
+    log.info(f"▶️  RUN: {run_name} on STB={stb_id}")
 
-            bf, af = _latest_pair_paths()
-            pred    = predict(bf, af)
+    start_ts = time.time()
+
+    for step_idx, step in enumerate(spec["steps"], 1):
+        cmd     = step["cmd"].upper()
+        expect  = step.get("expect_cmd", cmd).upper()
+        wait    = float(step.get("wait", 0.5))
+        repeat  = int(step.get("repeat", 1))
+        note    = step.get("note", "")
+
+        for rep in range(repeat):
+            log.info(f"  [{step_idx}.{rep+1}] send {cmd}")
+            send(cmd, stb_id=stb_id)
+            time.sleep(wait)
+
+            # ---- prediction ------------------------------------------------
+            bf_af = _latest_pair_paths()
+            if bf_af:
+                bf, af = bf_af
+                pred = predict(bf, af)                 # pair-based check
+                conf = 1.0                             # dummy (pair path returns str)
+            else:
+                frame = capture_frame()                # grab HDMI now
+                pred, conf = detect_screen(frame)      # single frame
+            # -----------------------------------------------------------------
+
             outcome = "PASS" if pred == expect else "FAIL"
+            log.info(f"      → {pred} ({conf:.2f})  [{outcome}]")
 
             steps_out.append({
-                "cmd": cmd,
-                "expect_cmd": expect,
-                "predicted_cmd": pred,
-                "outcome": outcome,
-                "timestamp": _utc_iso(),
-                "note": step.get("note", ""),
-                "iteration": i + 1,
+                "step_idx":    step_idx,
+                "iteration":   rep + 1,
+                "cmd":         cmd,
+                "expect_cmd":  expect,
+                "predicted":   pred,
+                "confidence":  conf,
+                "outcome":     outcome,
+                "note":        note,
+                "timestamp":   _utc_iso(),
             })
 
-    run_rec = {
-        "name": name,
-        "stb_id": stb,
+    run_rec: RunResult = {
+        "name":     run_name,
+        "stb_id":   stb_id,
         "start_ts": start_ts,
-        "end_ts": time.time(),
-        "overall": "PASS" if all(s["outcome"] == "PASS" for s in steps_out) else "FAIL",
-        "steps": steps_out,
-        "spec": str(spec_path),
+        "end_ts":   time.time(),
+        "overall":  "PASS" if all(s["outcome"] == "PASS" for s in steps_out) else "FAIL",
+        "steps":    steps_out,
+        "spec":     str(spec_path),
     }
 
-    reporter.generate_run_report(run_rec)
+    reporting.generate_run_report(run_rec)          # JUnit / Allure files
     pathlib.Path("last_run.json").write_text(json.dumps(run_rec, indent=2))
+    log.info(f"🏁  RUN COMPLETE — {run_rec['overall']}")
     return run_rec
-# ---------------------------------------------------------------------------
-# CLI quick‑test
-# ---------------------------------------------------------------------------
 
+
+# ---------------------------------------------------------------------------
+# CLI
 if __name__ == "__main__":
-    import argparse, os
-
-    ap = argparse.ArgumentParser(description="Run a YAML test spec.")
-    ap.add_argument("spec", help="Path to YAML spec file")
-    ap.add_argument("--neo_pass", default="mango-metal-moral-bronze-prague-8964", help="Neo4j password (falls back to env)")
+    import argparse, sys
+    ap = argparse.ArgumentParser()
+    ap.add_argument("test", help="YAML path, e.g. tests\\guide_navigation1.yaml")
     args = ap.parse_args()
 
-    if args.neo_pass:
-        os.environ["NEO4J_PASS"] = args.neo_pass   # picked up by UIGraph
-
-    res = run_spec(args.spec)
-    print(json.dumps(res, indent=2))
+    ok = run_spec(args.test)
+    sys.exit(0 if ok["overall"] == "PASS" else 1)

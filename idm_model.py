@@ -29,6 +29,7 @@ from torch.utils.data import DataLoader, IterableDataset
 from torch.utils.data._utils.collate import default_collate
 from tqdm import tqdm
 from torchvision.io import read_video
+import torch.nn.functional as F
 
 from dataset_store import iter_batches
 
@@ -39,6 +40,7 @@ WEIGHTS_PATH = Path("models/idm_resnet18.pt")
 WEIGHTS_PATH.parent.mkdir(parents=True, exist_ok=True)
 
 # ─── Utilities ─────────────────────────────────────────────────────────────
+
 def _load_img(path: Path) -> torch.Tensor:
     img = cv2.imread(str(path))
     if img is None:
@@ -110,6 +112,8 @@ class SiameseIDM(nn.Module):
         f2 = self.proj(self.trunk(af))
         x  = torch.cat([f1, f2], dim=1)
         return self.head(x), f2  # logits, AF-emb
+
+_model_cache: tuple[Optional[SiameseIDM], Optional[Dict[int,str]]] = (None, None)
 
 # ─── Training ──────────────────────────────────────────────────────────────
 def train(
@@ -197,17 +201,54 @@ def train(
     print("✅ Training complete — weights at", WEIGHTS_PATH)
 
 # ─── Inference ──────────────────────────────────────────────────────────────
-_model_cache: Tuple[Optional[SiameseIDM],Optional[Dict[int,str]]] = (None,None)
 def _lazy_load():
     global _model_cache
     model, idx2cmd = _model_cache
     if model is None:
-        idx2cmd = json.loads((WEIGHTS_PATH.parent/"cmd_vocab.json").read_text())
+        # ─── load vocab & model ───────────────────────────────────────────
+        raw = json.loads((WEIGHTS_PATH.parent / "cmd_vocab.json").read_text())
+        idx2cmd = {int(k): v for k, v in raw.items()}   # ←★ cast keys to int
         model = SiameseIDM(len(idx2cmd)).to(DEVICE)
         model.load_state_dict(torch.load(WEIGHTS_PATH, map_location=DEVICE))
         model.eval()
         _model_cache = (model, idx2cmd)
     return model, idx2cmd
+
+
+def _preprocess_nd(frame: np.ndarray) -> torch.Tensor:
+    """BGR ndarray → 1×C×H×W float32 tensor on DEVICE, range [-1,1]."""
+    rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    rgb = cv2.resize(rgb, (IMG_SIZE, IMG_SIZE))
+    rgb = rgb.astype(np.float32) / 255.0
+    rgb = (rgb.transpose(2, 0, 1) - 0.5) / 0.5
+    return torch.from_numpy(rgb).unsqueeze(0).to(DEVICE)
+
+def predict_single(frame: np.ndarray) -> Tuple[str, float]:
+    """
+    Return (label, confidence) for one frame.  We feed the SAME image into the
+    Siamese heads twice – not perfect, but good enough for real-time routing.
+    """
+    model, idx2cmd = _lazy_load()
+    batch = _preprocess_nd(frame)
+    with torch.no_grad():
+        logits, _ = model(batch, batch)          # bf = af = frame
+        probs = F.softmax(logits, dim=1)[0].cpu().numpy()
+
+    idx = int(probs.argmax())
+    label = idx2cmd[str(idx)]
+    conf  = float(probs[idx])
+    return label, conf
+
+# Export a stable API the rest of the pipeline can import
+preprocess_ndarray = _preprocess_nd          # nice to have
+predict_single_frame = predict_single        # idem
+
+# Optional: expose LABELS if other code wants it
+try:
+    _, _idx2cmd = _lazy_load()
+    LABELS = [_idx2cmd[str(i)] for i in range(len(_idx2cmd))]
+except Exception:
+    LABELS = []
 
 def predict(bf_path: Path, af_path: Path) -> str:
     model, idx2cmd = _lazy_load()
