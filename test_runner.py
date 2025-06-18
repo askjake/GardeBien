@@ -109,7 +109,7 @@ def run_spec(spec_path: str | pathlib.Path) -> RunResult:
                 "iteration":   rep + 1,
                 "cmd":         cmd,
                 "expect_cmd":  expect,
-                "predicted":   pred,
+                "predicted_cmd":   pred,
                 "confidence":  conf,
                 "outcome":     outcome,
                 "note":        note,

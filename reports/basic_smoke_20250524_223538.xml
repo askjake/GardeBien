@@ -1,0 +1,36 @@
+<testsuite name="basic_smoke" tests="5" failures="4" timestamp="2025-05-24T22:35:38.947880+00:00"><testcase classname="basic_smoke" name="POWER" time="0"><failure message="expected=POWER predicted=MENU">expected=POWER predicted=MENU</failure><system-out>{
+  "cmd": "POWER",
+  "expect_cmd": "POWER",
+  "predicted_cmd": "MENU",
+  "outcome": "FAIL",
+  "timestamp": "2025-05-24T22:35:38.184124+00:00",
+  "note": ""
+}</system-out></testcase><testcase classname="basic_smoke" name="MENU" time="0"><system-out>{
+  "cmd": "MENU",
+  "expect_cmd": "MENU",
+  "predicted_cmd": "MENU",
+  "outcome": "PASS",
+  "timestamp": "2025-05-24T22:35:38.355148+00:00",
+  "note": "open main menu"
+}</system-out></testcase><testcase classname="basic_smoke" name="RIGHT" time="0"><failure message="expected=RIGHT predicted=MENU">expected=RIGHT predicted=MENU</failure><system-out>{
+  "cmd": "RIGHT",
+  "expect_cmd": "RIGHT",
+  "predicted_cmd": "MENU",
+  "outcome": "FAIL",
+  "timestamp": "2025-05-24T22:35:38.555629+00:00",
+  "note": ""
+}</system-out></testcase><testcase classname="basic_smoke" name="OK" time="0"><failure message="expected=OK predicted=MENU">expected=OK predicted=MENU</failure><system-out>{
+  "cmd": "OK",
+  "expect_cmd": "OK",
+  "predicted_cmd": "MENU",
+  "outcome": "FAIL",
+  "timestamp": "2025-05-24T22:35:38.757321+00:00",
+  "note": ""
+}</system-out></testcase><testcase classname="basic_smoke" name="BACK" time="0"><failure message="expected=BACK predicted=MENU">expected=BACK predicted=MENU</failure><system-out>{
+  "cmd": "BACK",
+  "expect_cmd": "BACK",
+  "predicted_cmd": "MENU",
+  "outcome": "FAIL",
+  "timestamp": "2025-05-24T22:35:38.947730+00:00",
+  "note": ""
+}</system-out></testcase></testsuite>

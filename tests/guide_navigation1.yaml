@@ -14,7 +14,6 @@ steps:
     expect_cmd: "RIGHT"
     # …etc…
 
-steps:
   # 0. Wake / reset context
   - cmd: "LIVE"          # ensure box is on
     wait: 5.0
@@ -162,3 +161,70 @@ steps:
     expect_cmd: "9"
   - cmd: "0"
     expect_cmd: "0"
+
+  # 0. Wake / reset context
+  - cmd: "LIVE"          # ensure box is on
+    wait: 5.0
+
+  # 1. DVR root
+  - cmd: "HOME"
+    expect_cmd: "HOME"
+    wait: 1.4
+    note: "open HOME menu"
+
+  - cmd: "RIGHT"
+    expect_cmd: "RIGHT"
+  - cmd: "RIGHT"
+    expect_cmd: "RIGHT"
+
+  # 2. Options ▸ Create Custom Timer
+  - cmd: "OPTIONS"
+    expect_cmd: "OPTIONS"
+  - cmd: "3"
+    expect_cmd: "3"
+    wait: 1.0
+
+  # 2b. Choose channel “2”
+  - cmd: "ENTER"             # Select channel list
+    expect_cmd: "OK"
+  - cmd: "2"
+    expect_cmd: "NUM_2"
+    wait: 0.5
+  - cmd: "ENTER"
+    expect_cmd: "OK"
+
+  # 3. Down to Time field
+  - cmd: "DOWN"           # Frequency ▸ Date ▸ Time
+  - cmd: "DOWN"
+  - cmd: "DOWN"
+
+  - cmd: "DOWN"
+  - cmd: "RIGHT"
+    expect_cmd: "RIGHT"
+  - cmd: "DOWN" # 60 times, set to current minute
+    expect_cmd: "DOWN"
+    repeat: 10
+  - cmd: "UP"
+  - cmd: "UP"   # set to start 2 minutes from now
+  - cmd: "RIGHT" # AM/PM
+    expect_cmd: "RIGHT"
+  - cmd: "RIGHT" # stop hour
+    expect_cmd: "RIGHT"
+  - cmd: "DOWN" # set stop time to current hour
+  - cmd: "RIGHT"
+    expect_cmd: "RIGHT"
+  - cmd: "UP"
+  - cmd: "UP"   # set recording for 2 minutes long
+  - cmd: "RIGHT"
+    expect_cmd: "RIGHT"
+  - cmd: "RIGHT"
+    expect_cmd: "RIGHT"
+
+  - cmd: "ENTER"
+  - cmd: "RIGHT"
+    expect_cmd: "RIGHT"
+  - cmd: "RIGHT"
+    expect_cmd: "RIGHT"
+
+  - cmd: "ENTER"
+

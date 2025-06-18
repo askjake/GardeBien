@@ -1,0 +1,385 @@
+<testsuite name="t_dvr_001_custom_timer" tests="48" failures="40" timestamp="2025-05-28T12:11:18.516747+00:00"><testcase classname="t_dvr_001_custom_timer" name="LIVE" time="0"><failure message="expected=LIVE predicted=2">expected=LIVE predicted=2</failure><system-out>{
+  "cmd": "LIVE",
+  "expect_cmd": "LIVE",
+  "predicted_cmd": "2",
+  "outcome": "FAIL",
+  "timestamp": "2025-05-28T11:52:40.564411+00:00",
+  "note": "",
+  "iteration": 1
+}</system-out></testcase><testcase classname="t_dvr_001_custom_timer" name="DVR" time="0"><failure message="expected=DVR predicted=CH_DOWN">expected=DVR predicted=CH_DOWN</failure><system-out>{
+  "cmd": "DVR",
+  "expect_cmd": "DVR",
+  "predicted_cmd": "CH_DOWN",
+  "outcome": "FAIL",
+  "timestamp": "2025-05-28T11:53:01.992840+00:00",
+  "note": "open DVR menu",
+  "iteration": 1
+}</system-out></testcase><testcase classname="t_dvr_001_custom_timer" name="UP" time="0"><failure message="expected=UP predicted=RWD">expected=UP predicted=RWD</failure><system-out>{
+  "cmd": "UP",
+  "expect_cmd": "UP",
+  "predicted_cmd": "RWD",
+  "outcome": "FAIL",
+  "timestamp": "2025-05-28T11:53:22.306346+00:00",
+  "note": "",
+  "iteration": 1
+}</system-out></testcase><testcase classname="t_dvr_001_custom_timer" name="RIGHT" time="0"><failure message="expected=RIGHT predicted=1">expected=RIGHT predicted=1</failure><system-out>{
+  "cmd": "RIGHT",
+  "expect_cmd": "RIGHT",
+  "predicted_cmd": "1",
+  "outcome": "FAIL",
+  "timestamp": "2025-05-28T11:53:42.885836+00:00",
+  "note": "",
+  "iteration": 1
+}</system-out></testcase><testcase classname="t_dvr_001_custom_timer" name="RIGHT" time="0"><failure message="expected=RIGHT predicted=9">expected=RIGHT predicted=9</failure><system-out>{
+  "cmd": "RIGHT",
+  "expect_cmd": "RIGHT",
+  "predicted_cmd": "9",
+  "outcome": "FAIL",
+  "timestamp": "2025-05-28T11:54:03.479035+00:00",
+  "note": "",
+  "iteration": 1
+}</system-out></testcase><testcase classname="t_dvr_001_custom_timer" name="OPTIONS" time="0"><system-out>{
+  "cmd": "OPTIONS",
+  "expect_cmd": "OPTIONS",
+  "predicted_cmd": "OPTIONS",
+  "outcome": "PASS",
+  "timestamp": "2025-05-28T11:54:23.285988+00:00",
+  "note": "",
+  "iteration": 1
+}</system-out></testcase><testcase classname="t_dvr_001_custom_timer" name="3" time="0"><system-out>{
+  "cmd": "3",
+  "expect_cmd": "3",
+  "predicted_cmd": "3",
+  "outcome": "PASS",
+  "timestamp": "2025-05-28T11:54:44.317586+00:00",
+  "note": "",
+  "iteration": 1
+}</system-out></testcase><testcase classname="t_dvr_001_custom_timer" name="ENTER" time="0"><failure message="expected=OK predicted=0">expected=OK predicted=0</failure><system-out>{
+  "cmd": "ENTER",
+  "expect_cmd": "OK",
+  "predicted_cmd": "0",
+  "outcome": "FAIL",
+  "timestamp": "2025-05-28T11:55:04.596102+00:00",
+  "note": "",
+  "iteration": 1
+}</system-out></testcase><testcase classname="t_dvr_001_custom_timer" name="2" time="0"><failure message="expected=NUM_2 predicted=DOWN">expected=NUM_2 predicted=DOWN</failure><system-out>{
+  "cmd": "2",
+  "expect_cmd": "NUM_2",
+  "predicted_cmd": "DOWN",
+  "outcome": "FAIL",
+  "timestamp": "2025-05-28T11:55:25.060028+00:00",
+  "note": "",
+  "iteration": 1
+}</system-out></testcase><testcase classname="t_dvr_001_custom_timer" name="ENTER" time="0"><failure message="expected=OK predicted=MENU">expected=OK predicted=MENU</failure><system-out>{
+  "cmd": "ENTER",
+  "expect_cmd": "OK",
+  "predicted_cmd": "MENU",
+  "outcome": "FAIL",
+  "timestamp": "2025-05-28T11:55:45.221683+00:00",
+  "note": "",
+  "iteration": 1
+}</system-out></testcase><testcase classname="t_dvr_001_custom_timer" name="DOWN" time="0"><system-out>{
+  "cmd": "DOWN",
+  "expect_cmd": "DOWN",
+  "predicted_cmd": "DOWN",
+  "outcome": "PASS",
+  "timestamp": "2025-05-28T11:56:05.728929+00:00",
+  "note": "",
+  "iteration": 1
+}</system-out></testcase><testcase classname="t_dvr_001_custom_timer" name="DOWN" time="0"><failure message="expected=DOWN predicted=0">expected=DOWN predicted=0</failure><system-out>{
+  "cmd": "DOWN",
+  "expect_cmd": "DOWN",
+  "predicted_cmd": "0",
+  "outcome": "FAIL",
+  "timestamp": "2025-05-28T11:56:25.940649+00:00",
+  "note": "",
+  "iteration": 1
+}</system-out></testcase><testcase classname="t_dvr_001_custom_timer" name="DOWN" time="0"><failure message="expected=DOWN predicted=CH_DOWN">expected=DOWN predicted=CH_DOWN</failure><system-out>{
+  "cmd": "DOWN",
+  "expect_cmd": "DOWN",
+  "predicted_cmd": "CH_DOWN",
+  "outcome": "FAIL",
+  "timestamp": "2025-05-28T11:56:46.424129+00:00",
+  "note": "",
+  "iteration": 1
+}</system-out></testcase><testcase classname="t_dvr_001_custom_timer" name="ENTER" time="0"><failure message="expected=ENTER predicted=RWD">expected=ENTER predicted=RWD</failure><system-out>{
+  "cmd": "ENTER",
+  "expect_cmd": "ENTER",
+  "predicted_cmd": "RWD",
+  "outcome": "FAIL",
+  "timestamp": "2025-05-28T11:57:06.899409+00:00",
+  "note": "open set-time dialog",
+  "iteration": 1
+}</system-out></testcase><testcase classname="t_dvr_001_custom_timer" name="DOWN" time="0"><failure message="expected=DOWN predicted=FWD">expected=DOWN predicted=FWD</failure><system-out>{
+  "cmd": "DOWN",
+  "expect_cmd": "DOWN",
+  "predicted_cmd": "FWD",
+  "outcome": "FAIL",
+  "timestamp": "2025-05-28T11:57:27.394123+00:00",
+  "note": "",
+  "iteration": 1
+}</system-out></testcase><testcase classname="t_dvr_001_custom_timer" name="RIGHT" time="0"><failure message="expected=RIGHT predicted=ENTER">expected=RIGHT predicted=ENTER</failure><system-out>{
+  "cmd": "RIGHT",
+  "expect_cmd": "RIGHT",
+  "predicted_cmd": "ENTER",
+  "outcome": "FAIL",
+  "timestamp": "2025-05-28T11:57:48.234489+00:00",
+  "note": "",
+  "iteration": 1
+}</system-out></testcase><testcase classname="t_dvr_001_custom_timer" name="DOWN" time="0"><system-out>{
+  "cmd": "DOWN",
+  "expect_cmd": "DOWN",
+  "predicted_cmd": "DOWN",
+  "outcome": "PASS",
+  "timestamp": "2025-05-28T11:58:08.680232+00:00",
+  "note": "",
+  "iteration": 1
+}</system-out></testcase><testcase classname="t_dvr_001_custom_timer" name="DOWN" time="0"><system-out>{
+  "cmd": "DOWN",
+  "expect_cmd": "DOWN",
+  "predicted_cmd": "DOWN",
+  "outcome": "PASS",
+  "timestamp": "2025-05-28T11:58:29.539661+00:00",
+  "note": "",
+  "iteration": 2
+}</system-out></testcase><testcase classname="t_dvr_001_custom_timer" name="DOWN" time="0"><failure message="expected=DOWN predicted=CH_DOWN">expected=DOWN predicted=CH_DOWN</failure><system-out>{
+  "cmd": "DOWN",
+  "expect_cmd": "DOWN",
+  "predicted_cmd": "CH_DOWN",
+  "outcome": "FAIL",
+  "timestamp": "2025-05-28T11:58:49.790516+00:00",
+  "note": "",
+  "iteration": 3
+}</system-out></testcase><testcase classname="t_dvr_001_custom_timer" name="DOWN" time="0"><failure message="expected=DOWN predicted=CH_DOWN">expected=DOWN predicted=CH_DOWN</failure><system-out>{
+  "cmd": "DOWN",
+  "expect_cmd": "DOWN",
+  "predicted_cmd": "CH_DOWN",
+  "outcome": "FAIL",
+  "timestamp": "2025-05-28T11:59:10.417367+00:00",
+  "note": "",
+  "iteration": 4
+}</system-out></testcase><testcase classname="t_dvr_001_custom_timer" name="DOWN" time="0"><failure message="expected=DOWN predicted=CH_DOWN">expected=DOWN predicted=CH_DOWN</failure><system-out>{
+  "cmd": "DOWN",
+  "expect_cmd": "DOWN",
+  "predicted_cmd": "CH_DOWN",
+  "outcome": "FAIL",
+  "timestamp": "2025-05-28T11:59:30.703291+00:00",
+  "note": "",
+  "iteration": 5
+}</system-out></testcase><testcase classname="t_dvr_001_custom_timer" name="DOWN" time="0"><failure message="expected=DOWN predicted=CH_DOWN">expected=DOWN predicted=CH_DOWN</failure><system-out>{
+  "cmd": "DOWN",
+  "expect_cmd": "DOWN",
+  "predicted_cmd": "CH_DOWN",
+  "outcome": "FAIL",
+  "timestamp": "2025-05-28T11:59:51.967088+00:00",
+  "note": "",
+  "iteration": 6
+}</system-out></testcase><testcase classname="t_dvr_001_custom_timer" name="DOWN" time="0"><failure message="expected=DOWN predicted=2">expected=DOWN predicted=2</failure><system-out>{
+  "cmd": "DOWN",
+  "expect_cmd": "DOWN",
+  "predicted_cmd": "2",
+  "outcome": "FAIL",
+  "timestamp": "2025-05-28T12:00:13.386709+00:00",
+  "note": "",
+  "iteration": 7
+}</system-out></testcase><testcase classname="t_dvr_001_custom_timer" name="DOWN" time="0"><failure message="expected=DOWN predicted=CH_DOWN">expected=DOWN predicted=CH_DOWN</failure><system-out>{
+  "cmd": "DOWN",
+  "expect_cmd": "DOWN",
+  "predicted_cmd": "CH_DOWN",
+  "outcome": "FAIL",
+  "timestamp": "2025-05-28T12:00:34.956076+00:00",
+  "note": "",
+  "iteration": 8
+}</system-out></testcase><testcase classname="t_dvr_001_custom_timer" name="DOWN" time="0"><failure message="expected=DOWN predicted=CH_DOWN">expected=DOWN predicted=CH_DOWN</failure><system-out>{
+  "cmd": "DOWN",
+  "expect_cmd": "DOWN",
+  "predicted_cmd": "CH_DOWN",
+  "outcome": "FAIL",
+  "timestamp": "2025-05-28T12:00:56.595949+00:00",
+  "note": "",
+  "iteration": 9
+}</system-out></testcase><testcase classname="t_dvr_001_custom_timer" name="DOWN" time="0"><failure message="expected=DOWN predicted=CH_DOWN">expected=DOWN predicted=CH_DOWN</failure><system-out>{
+  "cmd": "DOWN",
+  "expect_cmd": "DOWN",
+  "predicted_cmd": "CH_DOWN",
+  "outcome": "FAIL",
+  "timestamp": "2025-05-28T12:01:18.235243+00:00",
+  "note": "",
+  "iteration": 10
+}</system-out></testcase><testcase classname="t_dvr_001_custom_timer" name="UP" time="0"><failure message="expected=UP predicted=DOWN">expected=UP predicted=DOWN</failure><system-out>{
+  "cmd": "UP",
+  "expect_cmd": "UP",
+  "predicted_cmd": "DOWN",
+  "outcome": "FAIL",
+  "timestamp": "2025-05-28T12:01:39.787557+00:00",
+  "note": "",
+  "iteration": 1
+}</system-out></testcase><testcase classname="t_dvr_001_custom_timer" name="UP" time="0"><failure message="expected=UP predicted=DVR">expected=UP predicted=DVR</failure><system-out>{
+  "cmd": "UP",
+  "expect_cmd": "UP",
+  "predicted_cmd": "DVR",
+  "outcome": "FAIL",
+  "timestamp": "2025-05-28T12:02:01.294061+00:00",
+  "note": "",
+  "iteration": 1
+}</system-out></testcase><testcase classname="t_dvr_001_custom_timer" name="RIGHT" time="0"><failure message="expected=RIGHT predicted=FWD">expected=RIGHT predicted=FWD</failure><system-out>{
+  "cmd": "RIGHT",
+  "expect_cmd": "RIGHT",
+  "predicted_cmd": "FWD",
+  "outcome": "FAIL",
+  "timestamp": "2025-05-28T12:02:22.778328+00:00",
+  "note": "",
+  "iteration": 1
+}</system-out></testcase><testcase classname="t_dvr_001_custom_timer" name="RIGHT" time="0"><failure message="expected=RIGHT predicted=RWD">expected=RIGHT predicted=RWD</failure><system-out>{
+  "cmd": "RIGHT",
+  "expect_cmd": "RIGHT",
+  "predicted_cmd": "RWD",
+  "outcome": "FAIL",
+  "timestamp": "2025-05-28T12:02:44.374498+00:00",
+  "note": "",
+  "iteration": 1
+}</system-out></testcase><testcase classname="t_dvr_001_custom_timer" name="DOWN" time="0"><failure message="expected=DOWN predicted=RWD">expected=DOWN predicted=RWD</failure><system-out>{
+  "cmd": "DOWN",
+  "expect_cmd": "DOWN",
+  "predicted_cmd": "RWD",
+  "outcome": "FAIL",
+  "timestamp": "2025-05-28T12:03:05.878712+00:00",
+  "note": "",
+  "iteration": 1
+}</system-out></testcase><testcase classname="t_dvr_001_custom_timer" name="RIGHT" time="0"><failure message="expected=RIGHT predicted=2">expected=RIGHT predicted=2</failure><system-out>{
+  "cmd": "RIGHT",
+  "expect_cmd": "RIGHT",
+  "predicted_cmd": "2",
+  "outcome": "FAIL",
+  "timestamp": "2025-05-28T12:03:27.540011+00:00",
+  "note": "",
+  "iteration": 1
+}</system-out></testcase><testcase classname="t_dvr_001_custom_timer" name="UP" time="0"><failure message="expected=UP predicted=ENTER">expected=UP predicted=ENTER</failure><system-out>{
+  "cmd": "UP",
+  "expect_cmd": "UP",
+  "predicted_cmd": "ENTER",
+  "outcome": "FAIL",
+  "timestamp": "2025-05-28T12:03:49.244985+00:00",
+  "note": "",
+  "iteration": 1
+}</system-out></testcase><testcase classname="t_dvr_001_custom_timer" name="UP" time="0"><failure message="expected=UP predicted=DOWN">expected=UP predicted=DOWN</failure><system-out>{
+  "cmd": "UP",
+  "expect_cmd": "UP",
+  "predicted_cmd": "DOWN",
+  "outcome": "FAIL",
+  "timestamp": "2025-05-28T12:04:10.800909+00:00",
+  "note": "",
+  "iteration": 1
+}</system-out></testcase><testcase classname="t_dvr_001_custom_timer" name="RIGHT" time="0"><failure message="expected=RIGHT predicted=FWD">expected=RIGHT predicted=FWD</failure><system-out>{
+  "cmd": "RIGHT",
+  "expect_cmd": "RIGHT",
+  "predicted_cmd": "FWD",
+  "outcome": "FAIL",
+  "timestamp": "2025-05-28T12:04:32.177443+00:00",
+  "note": "",
+  "iteration": 1
+}</system-out></testcase><testcase classname="t_dvr_001_custom_timer" name="RIGHT" time="0"><failure message="expected=RIGHT predicted=CH_DOWN">expected=RIGHT predicted=CH_DOWN</failure><system-out>{
+  "cmd": "RIGHT",
+  "expect_cmd": "RIGHT",
+  "predicted_cmd": "CH_DOWN",
+  "outcome": "FAIL",
+  "timestamp": "2025-05-28T12:04:53.193848+00:00",
+  "note": "",
+  "iteration": 1
+}</system-out></testcase><testcase classname="t_dvr_001_custom_timer" name="ENTER" time="0"><system-out>{
+  "cmd": "ENTER",
+  "expect_cmd": "ENTER",
+  "predicted_cmd": "ENTER",
+  "outcome": "PASS",
+  "timestamp": "2025-05-28T12:05:15.288773+00:00",
+  "note": "",
+  "iteration": 1
+}</system-out></testcase><testcase classname="t_dvr_001_custom_timer" name="RIGHT" time="0"><failure message="expected=RIGHT predicted=ENTER">expected=RIGHT predicted=ENTER</failure><system-out>{
+  "cmd": "RIGHT",
+  "expect_cmd": "RIGHT",
+  "predicted_cmd": "ENTER",
+  "outcome": "FAIL",
+  "timestamp": "2025-05-28T12:05:36.939236+00:00",
+  "note": "",
+  "iteration": 1
+}</system-out></testcase><testcase classname="t_dvr_001_custom_timer" name="RIGHT" time="0"><system-out>{
+  "cmd": "RIGHT",
+  "expect_cmd": "RIGHT",
+  "predicted_cmd": "RIGHT",
+  "outcome": "PASS",
+  "timestamp": "2025-05-28T12:05:58.373753+00:00",
+  "note": "",
+  "iteration": 1
+}</system-out></testcase><testcase classname="t_dvr_001_custom_timer" name="ENTER" time="0"><failure message="expected=ENTER predicted=CH_DOWN">expected=ENTER predicted=CH_DOWN</failure><system-out>{
+  "cmd": "ENTER",
+  "expect_cmd": "ENTER",
+  "predicted_cmd": "CH_DOWN",
+  "outcome": "FAIL",
+  "timestamp": "2025-05-28T12:06:20.133909+00:00",
+  "note": "",
+  "iteration": 1
+}</system-out></testcase><testcase classname="t_dvr_001_custom_timer" name="LIVE" time="0"><failure message="expected=LIVE predicted=DVR">expected=LIVE predicted=DVR</failure><system-out>{
+  "cmd": "LIVE",
+  "expect_cmd": "LIVE",
+  "predicted_cmd": "DVR",
+  "outcome": "FAIL",
+  "timestamp": "2025-05-28T12:08:42.831982+00:00",
+  "note": "",
+  "iteration": 1
+}</system-out></testcase><testcase classname="t_dvr_001_custom_timer" name="DVR" time="0"><system-out>{
+  "cmd": "DVR",
+  "expect_cmd": "DVR",
+  "predicted_cmd": "DVR",
+  "outcome": "PASS",
+  "timestamp": "2025-05-28T12:09:05.552938+00:00",
+  "note": "",
+  "iteration": 1
+}</system-out></testcase><testcase classname="t_dvr_001_custom_timer" name="OK" time="0"><failure message="expected=OK predicted=0">expected=OK predicted=0</failure><system-out>{
+  "cmd": "OK",
+  "expect_cmd": "OK",
+  "predicted_cmd": "0",
+  "outcome": "FAIL",
+  "timestamp": "2025-05-28T12:09:28.683133+00:00",
+  "note": "",
+  "iteration": 1
+}</system-out></testcase><testcase classname="t_dvr_001_custom_timer" name="OK" time="0"><failure message="expected=OK predicted=DVR">expected=OK predicted=DVR</failure><system-out>{
+  "cmd": "OK",
+  "expect_cmd": "OK",
+  "predicted_cmd": "DVR",
+  "outcome": "FAIL",
+  "timestamp": "2025-05-28T12:09:51.550471+00:00",
+  "note": "",
+  "iteration": 1
+}</system-out></testcase><testcase classname="t_dvr_001_custom_timer" name="OK" time="0"><failure message="expected=OK predicted=2">expected=OK predicted=2</failure><system-out>{
+  "cmd": "OK",
+  "expect_cmd": "OK",
+  "predicted_cmd": "2",
+  "outcome": "FAIL",
+  "timestamp": "2025-05-28T12:10:13.042599+00:00",
+  "note": "",
+  "iteration": 1
+}</system-out></testcase><testcase classname="t_dvr_001_custom_timer" name="LEFT" time="0"><failure message="expected=LEFT predicted=0">expected=LEFT predicted=0</failure><system-out>{
+  "cmd": "LEFT",
+  "expect_cmd": "LEFT",
+  "predicted_cmd": "0",
+  "outcome": "FAIL",
+  "timestamp": "2025-05-28T12:10:35.213481+00:00",
+  "note": "",
+  "iteration": 1
+}</system-out></testcase><testcase classname="t_dvr_001_custom_timer" name="OK" time="0"><failure message="expected=OK predicted=RWD">expected=OK predicted=RWD</failure><system-out>{
+  "cmd": "OK",
+  "expect_cmd": "OK",
+  "predicted_cmd": "RWD",
+  "outcome": "FAIL",
+  "timestamp": "2025-05-28T12:10:57.060335+00:00",
+  "note": "",
+  "iteration": 1
+}</system-out></testcase><testcase classname="t_dvr_001_custom_timer" name="OK" time="0"><failure message="expected=OK predicted=CH_DOWN">expected=OK predicted=CH_DOWN</failure><system-out>{
+  "cmd": "OK",
+  "expect_cmd": "OK",
+  "predicted_cmd": "CH_DOWN",
+  "outcome": "FAIL",
+  "timestamp": "2025-05-28T12:11:18.516582+00:00",
+  "note": "",
+  "iteration": 1
+}</system-out></testcase></testsuite>
