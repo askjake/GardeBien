@@ -30,14 +30,19 @@ from torch.utils.data._utils.collate import default_collate
 from tqdm import tqdm
 from torchvision.io import read_video
 import torch.nn.functional as F
-
+import os
 from dataset_store import iter_batches
 
 # ─── Config & Paths ────────────────────────────────────────────────────────
+DATASET_ROOT = Path(os.getenv("GB_DATASETS", "datasets")).expanduser()
+
 DEVICE       = "cuda" if torch.cuda.is_available() else "cpu"
 IMG_SIZE     = 224
-WEIGHTS_PATH = Path("models/idm_resnet18.pt")
+WEIGHTS_PATH = Path(
+    os.getenv("GB_MODELS", "models")
+).expanduser() / "idm_resnet18.pt"
 WEIGHTS_PATH.parent.mkdir(parents=True, exist_ok=True)
+
 
 # ─── Utilities ─────────────────────────────────────────────────────────────
 
@@ -117,7 +122,7 @@ _model_cache: tuple[Optional[SiameseIDM], Optional[Dict[int,str]]] = (None, None
 
 # ─── Training ──────────────────────────────────────────────────────────────
 def train(
-    dataset_dir: str = "datasets",
+    dataset_dir: str | Path = DATASET_ROOT,
     epochs: int = 3,
     batch_size: int = 32,
     val_split: float = 0.1,

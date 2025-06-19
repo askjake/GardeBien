@@ -39,12 +39,25 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Generator, List, Tuple
+import os, socket, uuid
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Configuration
 # These could become environment variables or be patched by the test‑runner.
 # ─────────────────────────────────────────────────────────────────────────────
-BASE_DIR = Path("datasets")  # relative to project root
+
+# ---------------------------------------------------------------------
+# Global roots – override with env vars so each machine can point
+# wherever it likes without touching code.
+#   • GB_DATASETS   – where BF/AF/clip folders live
+#   • GB_MODELS     – (optional) where .pt weights land after training
+# ---------------------------------------------------------------------
+BASE_DIR = Path(
+    os.getenv("GB_DATASETS", r"Z:\GardeBien\datasets")  # UNC/drive-letter path
+).expanduser()
+
+HOST_TAG = socket.gethostname().split(".")[0].upper()   # e.g. “CAPTURE-01”
+
 BF_NAME = "bf.jpg"
 AF_NAME = "af.jpg"
 META_NAME = "meta.json"
@@ -115,7 +128,8 @@ def save_sample(clip_path, bf_path, af_path, cmd, meta):
     _ensure_base()
     # 1. Build a timestamped directory name
     ts_stamp = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S_%f")[:-3]
-    pair_dir = DATASET_ROOT / f"{ts_stamp}_{cmd.upper()}"
+    uniq     = uuid.uuid4().hex[:6]                     # 6-char slug
+    pair_dir = BASE_DIR / f"{ts_stamp}_{HOST_TAG}_{uniq}_{cmd.upper()}"
     pair_dir.mkdir(parents=True, exist_ok=True)
 
     # 2. Copy the raw clip plus before/after frames
