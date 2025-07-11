@@ -1,6 +1,5 @@
 """dataset_store.py
- Utility module for persisting (BF, AF, CMD) samples that will later feed
- the inverse‑dynamics model and graph builder.
+ Utility module for persisting (BF, AF, CMD)
 
  High‑level contract
  -------------------
@@ -52,10 +51,8 @@ import os, socket, uuid
 #   • GB_DATASETS   – where BF/AF/clip folders live
 #   • GB_MODELS     – (optional) where .pt weights land after training
 # ---------------------------------------------------------------------
-BASE_DIR = Path(
-    os.getenv("GB_DATASETS", r"Z:\GardeBien\datasets")  # UNC/drive-letter path
-).expanduser()
-
+BASE_DIR = Path(os.getenv("GB_DATASETS", r"Z:\datasets")).expanduser()
+#BASE_DIR = Path("datasets")  # relative to project root
 HOST_TAG = socket.gethostname().split(".")[0].upper()   # e.g. “CAPTURE-01”
 
 BF_NAME = "bf.jpg"
@@ -180,8 +177,14 @@ def iter_batches(dataset_dir: str = "datasets", batch_size: int = 32):
         meta_file = sample_dir / META_NAME
         if not (clip.exists() and bf.exists() and af.exists() and meta_file.exists()):
             continue  # skip incomplete samples
-        with meta_file.open("r", encoding="utf-8") as fp:
-            cmd = json.load(fp).get("cmd", "UNKNOWN")
+        from json import JSONDecodeError
+        try:
+            with meta_file.open("r", encoding="utf-8") as fp:
+                cmd = json.load(fp).get("cmd", "UNKNOWN")
+        except (JSONDecodeError, FileNotFoundError) as e:
+            # warn once and skip this sample
+            print(f"[WARN] bad meta: {meta_file} ({e})")
+            continue
         batch.append((clip, bf, af, cmd))
         if len(batch) == batch_size:
             yield batch

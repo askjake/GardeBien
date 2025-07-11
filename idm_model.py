@@ -1,10 +1,10 @@
-#!/usr/bin/env python3
+##!/usr/bin/env python3
 """
 idm_model.py
 ============
 Vision *Inverse-Dynamics Model* (IDM)
 
-Now supports 5 s video‐clips + before/after frames.
+Now supports multi-GPU training, mixed precision, and optimized data loading.
 
 Usage:
 
@@ -14,10 +14,13 @@ Usage:
     # predict a single step
     python idm_model.py predict bf.jpg af.jpg
 """
-import itertools, json, random
+import itertools
+import json
+import random
+import os
 from collections import defaultdict
 from pathlib import Path
-from typing import Dict, List, Tuple, Optional
+from typing import Dict, List, Tuple
 
 import cv2
 import numpy as np
@@ -27,22 +30,19 @@ import torch.optim as optim
 import torchvision.models as models
 from torch.utils.data import DataLoader, IterableDataset
 from torch.utils.data._utils.collate import default_collate
-from tqdm import tqdm
 from torchvision.io import read_video
 import torch.nn.functional as F
-import os
+from torch.cuda.amp import GradScaler, autocast
+from tqdm import tqdm
+
 from dataset_store import iter_batches
 
 # ─── Config & Paths ────────────────────────────────────────────────────────
 DATASET_ROOT = Path(os.getenv("GB_DATASETS", "datasets")).expanduser()
-
-DEVICE       = "cuda" if torch.cuda.is_available() else "cpu"
-IMG_SIZE     = 224
-WEIGHTS_PATH = Path(
-    os.getenv("GB_MODELS", "models")
-).expanduser() / "idm_resnet18.pt"
+DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+IMG_SIZE = 224
+WEIGHTS_PATH = Path(os.getenv("GB_MODELS", "models")).expanduser() / "idm_resnet.pt"
 WEIGHTS_PATH.parent.mkdir(parents=True, exist_ok=True)
-
 
 # ─── Utilities ─────────────────────────────────────────────────────────────
 
@@ -57,33 +57,19 @@ def _load_img(path: Path) -> torch.Tensor:
     return torch.from_numpy(img)
 
 def video_collate(batch):
-    """
-    batch: List[ (video_path, bf_tensor, af_tensor, label) ]
-    We only stack bf, af, label; leave video_path list intact.
-    """
     videos, bfs, afs, ys = zip(*batch)
     bf_batch = default_collate(bfs)
     af_batch = default_collate(afs)
-    y_batch  = default_collate(ys)
+    y_batch = default_collate(ys)
     return list(videos), bf_batch, af_batch, y_batch
 
-# ─── Dataset ────────────────────────────────────────────────────────────────
+# ─── Dataset ───────────────────────────────────────────────────────────────
 class ClipBF_AFDataset(IterableDataset):
-    """
-    Iterable so we never load all samples at once.
-    Splits by val_split fraction.
-    """
-    def __init__(
-        self,
-        samples: List[Tuple[Path,Path,Path,str]],
-        cmd2idx: Dict[str,int],
-        val_split: float,
-        train: bool
-    ):
-        self.samples   = samples
-        self.cmd2idx   = cmd2idx
+    def __init__(self, samples: List[Tuple[Path,Path,Path,str]], cmd2idx: Dict[str,int], val_split: float, train: bool):
+        self.samples = samples
+        self.cmd2idx = cmd2idx
         self.val_split = val_split
-        self.train     = train
+        self.train = train
 
     def __iter__(self):
         n = len(self.samples)
@@ -91,8 +77,7 @@ class ClipBF_AFDataset(IterableDataset):
         for idx, (clip, bf_p, af_p, cmd) in enumerate(self.samples):
             is_train = idx < split_idx
             if (self.train and is_train) or (not self.train and not is_train):
-                # load video as Tensor[T, H, W, C]
-                vid, _, _ = read_video(str(clip), pts_unit="sec")
+                vid = None
                 bf = _load_img(Path(bf_p))
                 af = _load_img(Path(af_p))
                 label = self.cmd2idx[cmd]
@@ -104,104 +89,103 @@ class SiameseIDM(nn.Module):
         super().__init__()
         resnet = models.resnet18(weights=None)
         self.trunk = nn.Sequential(*list(resnet.children())[:-1])
-        self.proj  = nn.Sequential(nn.Flatten(),
-                                   nn.Linear(512, emb_dim),
-                                   nn.ReLU(inplace=True))
-        self.head  = nn.Sequential(
-            nn.Linear(2*emb_dim, 256), nn.ReLU(inplace=True),
+        self.proj = nn.Sequential(
+            nn.Flatten(),
+            nn.Linear(512, emb_dim),
+            nn.ReLU(inplace=True)
+        )
+        self.head = nn.Sequential(
+            nn.Linear(2*emb_dim, 256),
+            nn.ReLU(inplace=True),
             nn.Linear(256, num_actions)
         )
 
     def forward(self, bf, af):
-        f1 = self.proj(self.trunk(bf))  # (B,emb)
+        f1 = self.proj(self.trunk(bf))
         f2 = self.proj(self.trunk(af))
-        x  = torch.cat([f1, f2], dim=1)
-        return self.head(x), f2  # logits, AF-emb
-
-_model_cache: tuple[Optional[SiameseIDM], Optional[Dict[int,str]]] = (None, None)
+        x = torch.cat([f1, f2], dim=1)
+        return self.head(x), f2
 
 # ─── Training ──────────────────────────────────────────────────────────────
-def train(
-    dataset_dir: str | Path = DATASET_ROOT,
-    epochs: int = 3,
-    batch_size: int = 32,
-    val_split: float = 0.1,
-):
-    # 1) build idx vocab
+def train(dataset_dir: str | Path = DATASET_ROOT, epochs: int = 3, batch_size: int = 32, val_split: float = 0.1):
+    # build vocab
     cmd_counts = defaultdict(int)
     for batch in iter_batches(dataset_dir, batch_size=128):
-        for clip,bf,af,cmd in batch:
+        for _, _, _, cmd in batch:
             cmd_counts[cmd] += 1
     cmd2idx = {c:i for i,c in enumerate(sorted(cmd_counts))}
     idx2cmd = {i:c for c,i in cmd2idx.items()}
 
-    # 2) collect all samples
     samples = list(itertools.chain(*iter_batches(dataset_dir, batch_size=128)))
     random.shuffle(samples)
 
-    # 3) wrap into IterableDatasets
     train_ds = ClipBF_AFDataset(samples, cmd2idx, val_split, train=True)
-    val_ds   = ClipBF_AFDataset(samples, cmd2idx, val_split, train=False)
+    val_ds = ClipBF_AFDataset(samples, cmd2idx, val_split, train=False)
 
     train_loader = DataLoader(
         train_ds,
         batch_size=batch_size,
-        shuffle=False,      # already shuffled
-        num_workers=2,
+        shuffle=False,
+        num_workers=os.cpu_count() or 4,
         collate_fn=video_collate,
-        pin_memory=False,
+        pin_memory=True
     )
     val_loader = DataLoader(
         val_ds,
         batch_size=batch_size,
         shuffle=False,
-        num_workers=2,
+        num_workers=os.cpu_count() or 4,
         collate_fn=video_collate,
-        pin_memory=False,
+        pin_memory=True
     )
 
-    # 4) model, loss, optimizer
-    model     = SiameseIDM(len(cmd2idx)).to(DEVICE)
+    # model, parallelize if multiple GPUs
+    model = SiameseIDM(len(cmd2idx)).to(DEVICE)
+    if torch.cuda.device_count() > 1:
+        print(f"Using {torch.cuda.device_count()} GPUs")
+        model = nn.DataParallel(model)
+
     if WEIGHTS_PATH.exists():
         model.load_state_dict(torch.load(WEIGHTS_PATH, map_location=DEVICE))
         print("Loaded existing weights")
-    criterion = nn.CrossEntropyLoss()
-    optimizr  = optim.AdamW(model.parameters(), lr=3e-4)
 
-    # 5) training loop
-    for epoch in range(1, epochs+1):
+    criterion = nn.CrossEntropyLoss()
+    optimizr = optim.AdamW(model.parameters(), lr=3e-4)
+    scaler = GradScaler()
+
+    for epoch in range(1, epochs + 1):
         model.train()
-        tot, corr, ls_sum = 0,0,0.0
+        tot, corr, ls_sum = 0, 0, 0.0
         pbar = tqdm(train_loader, desc=f"Train {epoch}/{epochs}")
-        for vids, bf, af, y in pbar:
+        for _, bf, af, y in pbar:
             bf, af, y = bf.to(DEVICE), af.to(DEVICE), y.to(DEVICE)
             optimizr.zero_grad()
-            logits, _ = model(bf, af)
-            loss = criterion(logits, y)
-            loss.backward(); optimizr.step()
+            with autocast():
+                logits, _ = model(bf, af)
+                loss = criterion(logits, y)
+            scaler.scale(loss).backward()
+            scaler.step(optimizr)
+            scaler.update()
 
             preds = logits.argmax(1)
-            corr += (preds==y).sum().item()
-            tot  += y.size(0)
-            ls_sum += loss.item()*y.size(0)
-            pbar.set_postfix(acc=corr/tot, loss=ls_sum/tot)
+            corr += (preds == y).sum().item()
+            tot += y.size(0)
+            ls_sum += loss.item() * y.size(0)
+            pbar.set_postfix(acc=corr / tot, loss=ls_sum / tot)
 
-        # 6) validation
+        # validation
         model.eval()
         v_tot, v_corr = 0, 0
         with torch.no_grad():
-            for vids, bf, af, y in val_loader:
+            for _, bf, af, y in val_loader:
                 bf, af, y = bf.to(DEVICE), af.to(DEVICE), y.to(DEVICE)
-                logits, _ = model(bf, af)
-                v_corr += (logits.argmax(1)==y).sum().item()
-                v_tot  += y.size(0)
+                with autocast(): logits, _ = model(bf, af)
+                v_corr += (logits.argmax(1) == y).sum().item()
+                v_tot += y.size(0)
         print(f"Epoch {epoch} val_acc={v_corr/v_tot:.3f}")
 
-        # 7) persist
         torch.save(model.state_dict(), WEIGHTS_PATH)
-        (WEIGHTS_PATH.parent/"cmd_vocab.json").write_text(
-            json.dumps(idx2cmd, indent=2)
-        )
+        (WEIGHTS_PATH.parent / "cmd_vocab.json").write_text(json.dumps(idx2cmd, indent=2))
 
     print("✅ Training complete — weights at", WEIGHTS_PATH)
 

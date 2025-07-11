@@ -44,6 +44,11 @@ handler = logging.StreamHandler()
 handler.setFormatter(logging.Formatter("[%(asctime)s] %(levelname)s – %(message)s"))
 logger.addHandler(handler)
 
+import os
+DATASET_HTTP_ROOT = os.getenv(
+    "DATASET_HTTP_ROOT",
+    "http://10.74.139.250:8080/Volume2/GardeBien/datasets"
+).rstrip("/")
 # ---------------------------------------------------------------------------
 # Helper – get env or default
 # ---------------------------------------------------------------------------
@@ -92,35 +97,58 @@ class UIGraph(AbstractContextManager):
     # ------------------------------------------------------------------
 
     def add_transition(
-        self,
-        bf_hash: str,
-        af_hash: str,
-        cmd: str,
-        meta: Optional[dict] = None,
+            self,
+            bf_hash: str,
+            af_hash: str,
+            cmd: str,
+            meta: Optional[dict] = None,
+            *,
+            bf_img_url: str | None = None,
+            af_img_url: str | None = None,
     ) -> None:
-        """MERGE two Screen nodes and the edge between them.
+        """
+        MERGE two Screen nodes and the CMD edge between them.
 
-        ``meta`` may contain ``latency_ms`` and will be stored on the
-        relationship the **first** time the edge is created.
-        Subsequent calls increment a ``count`` property.
+        Parameters
+        ----------
+        bf_hash, af_hash : str
+            SHA-1 hashes of the BEFORE and AFTER screenshots.
+        cmd : str
+            Remote-control command (e.g. "RIGHT").
+        meta : dict, optional
+            Extra info; may include ``latency_ms``.
+        bf_img_url, af_img_url : str, optional (keyword-only)
+            Full HTTP URLs pointing to the *bf.jpg* / *af.jpg* files.
+            If supplied, they populate the ``img`` property on each
+            Screen node when the node is first created (or if it
+            currently lacks an img).
         """
         meta = meta or {}
+        # Build default URLs if the caller didn’t pass them explicitly
+        bf_img = bf_img_url or f"{DATASET_HTTP_ROOT}/{bf_hash}/bf.jpg"
+        af_img = af_img_url or f"{DATASET_HTTP_ROOT}/{af_hash}/bf.jpg"
         params = {
             "bf": bf_hash,
             "af": af_hash,
             "cmd": cmd.upper(),
             "ts": int(time.time() * 1000),
             "lat": int(meta.get("latency_ms", -1)),
+            "bf_img": bf_img,
+            "af_img": af_img,
         }
 
         cypher = """
         MERGE (a:Screen {hash: $bf})
-          ON CREATE SET a.first_seen = $ts
+          ON CREATE SET a.first_seen = $ts,
+                        a.img        = $bf_img
           ON MATCH  SET a.last_seen  = $ts
+          SET        a.img        = coalesce(a.img, $bf_img)
 
         MERGE (b:Screen {hash: $af})
-          ON CREATE SET b.first_seen = $ts
+          ON CREATE SET b.first_seen = $ts,
+                        b.img        = $af_img
           ON MATCH  SET b.last_seen  = $ts
+          SET        b.img        = coalesce(b.img, $af_img)
 
         MERGE (a)-[r:CMD {cmd: $cmd}]->(b)
           ON CREATE SET r.count = 1, r.first_ts = $ts, r.latency_ms = $lat
